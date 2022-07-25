@@ -79,6 +79,8 @@ function App() {
         setLoggedIn(true)
         checkToken();
         setName('');
+        setEmail('');
+        history.push('/movies');
       })
       .catch((err) => {
         throw err;
@@ -308,7 +310,7 @@ function App() {
               <Movies />
             </Route>
             <Route path='/saved-movies'>
-              <SavedMovies savedCards={savedCards} />
+              <SavedMovies />
             </Route >
             <Route path='/profile'>
               <Profile

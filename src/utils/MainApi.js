@@ -44,7 +44,6 @@ class MainApi {
       .then(this._checkAnswer);
   }
 
-
   updateProfile(name, email) {
     return fetch(`${this._baseUrl}/users/me`, {
       method: this._patch,
@@ -96,59 +95,6 @@ class MainApi {
     })
       .then(this._checkAnswer);
   }
-
-
-  // setUserProfile(data) {
-  //   return fetch(`${this._url}${this._users}${this._me}`, {
-  //     method: this._patch,
-  //     headers: this._headers,
-  //     body: JSON.stringify({
-  //       name: data.name,
-  //       about: data.description
-  //     })
-  //   })
-  //     .then(this._checkAnswer);
-  // }
-
-
-
-  // deleteCard(id) {
-  //   return fetch(`${this._url}${this._cards}/${id}`, {
-  //     method: this._delete,
-  //     headers: this._headers
-  //   })
-  //     .then(this._checkAnswer);
-  // }
-
-  // addLike(id) {
-  //   return fetch(`${this._url}${this._cards}/${id}${this._likes}`, {
-  //     method: this._put,
-  //     headers: this._headers
-  //   })
-  //     .then(this._checkAnswer);
-  // }
-
-  // deleteLike(id) {
-  //   return fetch(`${this._url}${this._cards}/${id}${this._likes}`, {
-  //     method: this._delete,
-  //     headers: this._headers
-  //   })
-  //     .then(this._checkAnswer);
-  // }
-
-  // updateAvatar(avatar) {
-  //   return fetch(`${this._url}${this._users}${this._me}${this._avatar}`, {
-  //     method: this._patch,
-  //     headers: this._headers,
-  //     body: JSON.stringify({ avatar })
-  //   })
-  //     .then(this._checkAnswer);
-  // }
-
-
-
-
-
 
 }
 

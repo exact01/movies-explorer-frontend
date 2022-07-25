@@ -27,8 +27,8 @@ function SavedMovies() {
   const resultUserCard = savedUserCards.filter((value) => {
     if (localStorage.searchRequestSavedMovies != null) {
       const searchRequestData = JSON.parse(localStorage.searchRequestSavedMovies);
-      const checkBoxState = searchRequestData.checkBox;
-      const request = searchRequestData.request ? searchRequestData.request : ' ';
+      const checkBoxState = searchRequestData.checkBox ? searchRequestData.checkBox : false;
+      const request = searchRequestData.request ? searchRequestData.request : '';
       if (checkBoxState) {
         return value.duration <= 41 && value.nameRU.toLowerCase().includes(request.toLowerCase());
       } else {

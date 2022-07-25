@@ -21,10 +21,9 @@ function SearchForm({
   setErrorResponse,
 }) {
   const location = useLocation();
-
   const { setSearchFormDirty } = useContext(CurrentUserContext);
-
   const [statusCheckBox, setStatusCheckBox] = useState(false);
+
   useEffect(() => {
     setSearchForm('')
     setSearchFormDirty(false);
