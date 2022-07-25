@@ -4,8 +4,6 @@ import logo from '../../images/__logo.svg';
 import { useLocation } from 'react-router-dom';
 import { Route, Link } from 'react-router-dom';
 
-
-
 function Header({ loggedIn }) {
 
   const location = useLocation();
@@ -13,7 +11,6 @@ function Header({ loggedIn }) {
   const modifierlogo = location.pathname === '/signup' ? 'header__logo_register' : location.pathname === '/signin' ? 'header__logo_register' : '';
 
   return (
-
     <Route path='/(movies|saved-movies|signup|signin|profile|)'>
       <header className='header'>
         <div className={`header__container ${modifierContainer}`}>
@@ -28,7 +25,6 @@ function Header({ loggedIn }) {
         </div>
       </header >
     </Route>
-
   )
 }
 

@@ -35,11 +35,10 @@ function Register({
         handleLogin(email, password)
           .then(setButtonDirty({ "success": false, 'message': '', 'color': '' }))
       })
-      .catch((err) => {
+      .catch(() => {
         setButtonDirty({ "success": true, 'message': 'Произошла ошибка, попробуйте позже!', 'color': 'red' })
         setTimeout(() => { setButtonDirty({ "success": false, 'message': '', 'color': '' }) }, 8000)
       })
-
   }
 
   return (

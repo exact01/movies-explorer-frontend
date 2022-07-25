@@ -12,18 +12,23 @@ import Login from '../Login/Login';
 import NotFound from '../NotFound/NotFound';
 import MovisApi from '../../utils/MoviesApi';
 import Api from '../../utils/MainApi';
-import { CurrentUserContext } from "../../context/CurrentUserContext";
+import { CurrentUserContext } from '../../context/CurrentUserContext';
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
 
 
 function App() {
   // стейты авторизации 
   const [cards, setCards] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [userData, setUserData] = useState({});
+  const [savedCards, setSavedCards] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(true);
   const [currentUser, setCurrentUser] = useState({});
   const history = useHistory();
-  // =========
   // стейты валидации
+  const [searchForm, setSearchForm] = useState('');
+  // eslint-disable-next-line no-unused-vars
+  const [searchInput, setSearchInput] = useState('')
+  const [searchFormDirty, setSearchFormDirty] = useState(false);
+  const [searchFormError, setSearchFormError] = useState('Нужно ввести ключевое слово');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,8 +39,154 @@ function App() {
   const [emailError, setEmailError] = useState('Емейл не может быть пустым');
   const [passwordError, setPasswordError] = useState('Пароль не может быть пустым')
   const [formValid, setFormValid] = useState(false);
-  const [buttonDirty, setButtonDirty] = useState({ "success": false, 'message': '', 'color': '' });
+  const [buttonDirty, setButtonDirty] = useState({ 'success': false, 'message': '', 'color': '' });
+  // ========= авторизация 
+
+  useEffect(() => {
+    checkToken();
+  }, []);
+
+  function checkToken() {
+    if (localStorage.getItem('jwt')) {
+      Api
+        .getUserProfile()
+        .then(setCurrentUser)
+        .catch(() => { setLoggedIn(false) })
+    } else { setLoggedIn(false) }
+  }
+
+  async function handleRegister(name, email, password) {
+    return Api
+      .register(name, email, password)
+      .then(() => {
+        setName('');
+        setEmail('');
+        history.push('/movies');
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }
+
+  async function handleLogin(email, password) {
+    return await Api
+      .authorize(email, password)
+      .then((data) => {
+        if (!data.token) {
+          return;
+        }
+        localStorage.setItem('jwt', data.token);
+        setLoggedIn(true)
+        checkToken();
+        setName('');
+      })
+      .catch((err) => {
+        throw err;
+      });
+  }
+
+  async function updateProfiles(email, name) {
+    return await Api
+      .updateProfile(email, name)
+      .then((res) => {
+        setCurrentUser(res.newObject)
+      })
+      .catch((err) => {
+        throw err;
+      })
+
+  }
+
+  async function handleSearchCard() {
+    return await MovisApi
+      .getInitialCards()
+      .then((cards) => {
+        setCards(cards);
+      })
+      .catch((e) => {
+        throw e
+      });
+  }
+
+  async function getSavedCard() {
+    return await Api
+      .getInitialSavedCards()
+      .then(setSavedCards)
+      .catch((e) => { throw e });
+  }
+
+  function deleteCard(card) {
+    Api.deleteSavedCard(card._id)
+      .then(e => setSavedCards(state => state.reduce((acc, value) => {
+        if (value._id === card._id) {
+          return acc;
+        } else { return acc.concat(value) }
+      }, [])))
+  }
+
+  function handleCardLike(card) {
+    const isLiked = savedCards.some(elem => currentUser._id === elem.owner && elem.movieId === card.id)
+    const cardDelete = savedCards.filter(value => value.movieId === card.id && value._id);
+
+    const promise = isLiked ? Api.deleteSavedCard(cardDelete[0]._id) : Api.addSavedCard(card);
+    promise
+      .then((newCard) => {
+        setSavedCards((state) => {
+          if (newCard.owner) {
+            return [...state, ...[newCard]]
+          } else {
+            return state.reduce((acc, value) => {
+              if (value._id === cardDelete[0]._id) {
+                return acc;
+              } else { return acc.concat(value) }
+            }, [])
+          }
+        });
+      })
+      .catch((e) => { console.log(e) });
+  }
+
+  function handleSignOut() {
+    setCurrentUser('')
+    localStorage.clear()
+    setLoggedIn(false);
+    history.push('/');
+  }
+  // =========
+
+  useEffect(() => { // запросы данных карточек если пользователь авторизован!
+    if (loggedIn) {
+      MovisApi
+        .getInitialCards()
+        .then(setCards)
+        .catch(e => console.log(e));
+      Api
+        .getInitialSavedCards()
+        .then(setSavedCards)
+        .catch(e => console.log(e))
+    }
+  }, [loggedIn]);
+
   // ========= Валидация инпутов профиля
+  function handlerSearchForm(e, route) {
+    if (e.target.value.length === 0) {
+      setSearchFormDirty(true);
+      setSearchFormError('Нужно ввести ключевое слово')
+    }
+    else {
+      setSearchFormDirty(false);
+      setSearchFormError('')
+    }
+    setSearchForm(e.target.value)
+
+    if (route === '/movies') {
+      localStorage.setItem('searchForm', JSON.stringify({ "searchForm": e.target.value }))
+    }
+    if (route === '/saved-movies') {
+      localStorage.setItem('searchFormSavedMovies', JSON.stringify({ "searchFormSavedMovies": e.target.value }))
+    }
+  }
+
   function handlerName(e) {
     if (e.target.value.length > 0) {
       setNameDirty(true)
@@ -62,7 +213,7 @@ function App() {
     if (e.target.value === currentUser.email) {
       setEmailError('Повторятся нельзя!')
     }
-    else if (!String(e.target.value).trim().toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+    else if (!String(e.target.value).trim().toLowerCase().match(/^(([^<>()[\]\\.,;:\s@']+(\.[^<>()[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
       setEmailError('Емейл не корректный')
     }
     else { setEmailError('') };
@@ -84,126 +235,35 @@ function App() {
     }
     else { setPasswordError('') }
   }
-  // ========= авторизация 
-  useEffect(() => {
-    checkToken();
-  }, []);
 
-
-  async function handleRegister(name, email, password) {
-    return Api
-      .register(name, email, password)
-      .then(() => {
-        setName('');
-        setEmail('');
-        history.push('/movies');
-      })
-      .catch((err) => {
-        throw err;
-      });
-  }
-
-  async function handleLogin(email, password) {
-    return Api
-      .authorize(email, password)
-      .then((data) => {
-        if (!data.token) {
-          return;
-        }
-        localStorage.setItem('jwt', data.token);
-        setLoggedIn(true)
-        checkToken();
-        setName('');
-      })
-      .catch((err) => {
-        throw err;
-      });
-  }
-
-  function checkToken() {
-    Api
-      .getContent()
-      .then((data) => {
-        if (data) {
-          setUserData({
-            id: data._id,
-            email: data.email,
-            name: data.name
-          });
-          setLoggedIn(true);
-        }
-
-      })
-      .catch(() => { setLoggedIn(false) })
-  }
-
-  async function updateProfiles(email, name) {
-    return Api
-      .updateProfile(email, name)
-      .then((res) => {
-        setCurrentUser(res.newObject)
-      })
-      .catch((err) => {
-        throw err;
-      })
-
-  }
-
-  function handleSignOut() {
-    localStorage.removeItem('jwt');
-    setLoggedIn(false);
-    history.push('/');
-  }
-
-  // =========
-
-  useEffect(() => { // запросы данных карточек и данных пользователя, когда пользователь авторизован!
-    if (loggedIn) {
-      Api
-        .getContent()
-        .then(setCurrentUser)
-        .catch(e => console.log(e))
-      MovisApi
-        .getInitialCards()
-        .then(setCards)
-        .catch(e => console.log(e));
-    }
-  }, [loggedIn]);
 
   return (
-    <CurrentUserContext.Provider value={{ currentUser }}>
+    <CurrentUserContext.Provider value={{
+      currentUser,
+      cards,
+      handlerSearchForm,
+      searchForm,
+      searchFormDirty,
+      searchFormError,
+      setFormValid,
+      formValid,
+      handleSearchCard,
+      setCards,
+      setSearchInput,
+      setSearchForm,
+      handleCardLike,
+      savedCards,
+      getSavedCard,
+      deleteCard,
+      setSearchFormDirty,
+      setSavedCards
+    }}>
       <div className='page'>
         <Header loggedIn={loggedIn} />
         <Switch>
           <Route exact path='/'>
             <Main />
           </Route>
-          <Route path='/movies'>
-            <Movies cards={cards} />
-          </Route>
-          <Route path='/profile'>
-            <Profile
-              handleSignOut={handleSignOut}
-              email={email}
-              handlerEmail={handlerEmail}
-              handlerName={handlerName}
-              emailDirty={emailDirty}
-              emailError={emailError}
-              name={name}
-              nameDirty={nameDirty}
-              nameError={nameError}
-              setFormValid={setFormValid}
-              updateProfiles={updateProfiles}
-              setButtonDirty={setButtonDirty}
-              buttonDirty={buttonDirty}
-              formValid={formValid}
-              setEmail={setEmail}
-              setName={setName}
-            />
-          </Route>
-          <Route path='/saved-movies'>
-            <SavedMovies />
-          </Route >
           <Route path='/signup'>
             <Register
               handleRegister={handleRegister}
@@ -243,6 +303,34 @@ function App() {
               setFormValid={setFormValid}
             />
           </Route>
+          <ProtectedRoute exact path='(|/saved-movies|/profile|/movies|)' loggedIn={loggedIn}>
+            <Route path='/movies'>
+              <Movies />
+            </Route>
+            <Route path='/saved-movies'>
+              <SavedMovies />
+            </Route >
+            <Route path='/profile'>
+              <Profile
+                handleSignOut={handleSignOut}
+                email={email}
+                handlerEmail={handlerEmail}
+                handlerName={handlerName}
+                emailDirty={emailDirty}
+                emailError={emailError}
+                name={name}
+                nameDirty={nameDirty}
+                nameError={nameError}
+                setFormValid={setFormValid}
+                updateProfiles={updateProfiles}
+                setButtonDirty={setButtonDirty}
+                buttonDirty={buttonDirty}
+                formValid={formValid}
+                setEmail={setEmail}
+                setName={setName}
+              />
+            </Route>
+          </ProtectedRoute>
           <Route>
             <NotFound />
           </Route>

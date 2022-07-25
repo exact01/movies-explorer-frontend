@@ -23,3 +23,7 @@
     margin-right: 19px;
   }
 }
+
+.searchform__form-submit:disabled {
+  background-color: #2b7a50;
+}

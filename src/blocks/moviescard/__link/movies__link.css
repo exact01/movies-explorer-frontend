@@ -1,0 +1,8 @@
+.moviescard__link {
+  display: flex;
+  flex-direction: column;
+}
+
+.moviescard__link:hover {
+  opacity: 0.5;
+}

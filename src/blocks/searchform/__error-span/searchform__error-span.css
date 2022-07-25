@@ -1,0 +1,24 @@
+.searchform__error-span {
+  position: absolute;
+  font-family: "Inter", Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #ee3465;
+  width: 604px;
+  top: 12px;
+  left: -600px;
+}
+
+@media screen and (max-width: 1023px) {
+  .searchform__error-span {
+    left: -320px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .searchform__error-span {
+    left: -102px;
+  }
+}

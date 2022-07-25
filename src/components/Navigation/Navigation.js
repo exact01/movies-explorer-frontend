@@ -1,12 +1,10 @@
 import './Navigation.css'
 import { Link, NavLink, Route } from 'react-router-dom';
 function Navigation({ loggedIn }) {
-
   return (
-
     <div className='navigation'>
       {loggedIn &&
-        <>
+        <Route path='/(movies|saved-movies|profile|/|)'>
           <div className='navigation__hamburger-menu'>
             <input className='navigation__toggle' id='navigation__checkbox' type='checkbox' />
             <label className='navigation__btn' htmlFor='navigation__checkbox'>
@@ -29,16 +27,17 @@ function Navigation({ loggedIn }) {
             </div>
             <Link to='/profile' className='navigation__link-profile'>Аккаунт</Link>
           </nav>
-        </>
+        </Route>
       }
       {!loggedIn &&
-        <nav>
-          <Link to='/signup' className='navigation__link'>Регистрация</Link>
-          <Link to='/signin' className='navigation__link navigation__link_item'>Войти</Link>
-        </nav>
+        <Route exact path='/'>
+          <nav>
+            <Link to='/signup' className='navigation__link'>Регистрация</Link>
+            <Link to='/signin' className='navigation__link navigation__link_item'>Войти</Link>
+          </nav>
+        </Route>
       }
     </div >
-
   )
 }
 

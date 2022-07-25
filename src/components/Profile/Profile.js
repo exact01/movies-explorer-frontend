@@ -32,14 +32,14 @@ function Profile({
   function handleSubmit(e) {
     e.preventDefault();
     updateProfiles(name, email)
-      .then((res) => {
+      .then(() => {
         setName('');
         setEmail('');
         setFormValid(false)
         setButtonDirty({ "success": true, 'message': 'Профиль обновлён!', 'color': '#2BE080' })
         setTimeout(() => { setButtonDirty({ 'success': false, 'message': '', 'color': '' }) }, 5000)
       })
-      .catch((err) => { setButtonDirty({ 'success': true, 'message': 'Произошла ошибка, попробуйте позже!', 'color': 'red' }) })
+      .catch(() => { setButtonDirty({ 'success': true, 'message': 'Произошла ошибка, попробуйте позже!', 'color': 'red' }) })
   }
   return (
     <div className='profile'>
