@@ -61,8 +61,8 @@ class MainApi {
       .then(this._checkAnswer);
   }
 
-  getInitialSavedCards() {
-    return fetch(`${this._baseUrl}/movies`, {
+  async getInitialSavedCards() {
+    return await fetch(`${this._baseUrl}/movies`, {
       headers: this._headers
     })
       .then(this._checkAnswer);

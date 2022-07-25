@@ -83,10 +83,8 @@ function SearchForm({
     if (location.pathname === '/saved-movies') {
       setSearchInput(searchForm);
       localStorage.setItem('searchRequestSavedMovies', JSON.stringify({ "checkBox": statusCheckBox, "request": searchForm, "movies": cards }))
-      handleSearchSubmit(cards, location.pathname);
     }
   }
-
 
   useEffect(() => {
     if (searchFormError) {
@@ -108,6 +106,7 @@ function SearchForm({
             onChange={(e) => { handlerSearchForm(e, location.pathname) }}
             placeholder='Фильм'
             className='searchform__input'
+            required
           />
           <div className='searchform__error'>
             <span className='searchform__error-span'>{searchFormDirty && searchFormError}</span>

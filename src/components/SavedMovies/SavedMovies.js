@@ -20,26 +20,22 @@ function SavedMovies() {
     setSearchForm,
     handleCardLike,
     savedCards,
+    setSavedCards
   } = useContext(CurrentUserContext);
 
-  const savedUserCards = handleSearchSubmit();
-
-  function handleSearchSubmit() {
-    const savedUserCards = savedCards.filter((value) => currentUser._id === value.owner && value);
+  const savedUserCards = savedCards.filter((value) => currentUser._id === value.owner && value);
+  const resultUserCard = savedUserCards.filter((value) => {
     if (localStorage.searchRequestSavedMovies != null) {
       const searchRequestData = JSON.parse(localStorage.searchRequestSavedMovies);
       const checkBoxState = searchRequestData.checkBox;
-      const request = searchRequestData.request;
-      return savedUserCards.filter(movie => {
-        if (checkBoxState === true) {
-          return movie.duration <= 41 && movie.nameRU.toLowerCase().includes(request.toLowerCase());
-        } else {
-          return movie.nameRU.toLowerCase().includes(request.toLowerCase());
-        }
-      });
-    }
-    return savedUserCards;
-  }
+      const request = searchRequestData.request ? searchRequestData.request : ' ';
+      if (checkBoxState) {
+        return value.duration <= 41 && value.nameRU.toLowerCase().includes(request.toLowerCase());
+      } else {
+        return value.nameRU.toLowerCase().includes(request.toLowerCase());
+      }
+    } else { return savedUserCards }
+  })
 
   return (
     <div className='savedmovies'>
@@ -55,9 +51,9 @@ function SavedMovies() {
         formValid={formValid}
         setCards={setCards}
         handleSearchCard={handleSearchCard}
-        handleSearchSubmit={handleSearchSubmit}
+        setSavedCards={setSavedCards}
       />
-      <MoviesCardList handleCardLike={handleCardLike} cards={savedUserCards} />
+      <MoviesCardList handleCardLike={handleCardLike} cards={resultUserCard} />
       <div className='savedmovies__block'></div>
     </div>
   )

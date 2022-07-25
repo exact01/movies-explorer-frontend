@@ -108,8 +108,8 @@ function App() {
       });
   }
 
-  async function getSavedCard() {
-    return await Api
+  function getSavedCard() {
+    Api
       .getInitialSavedCards()
       .then(setSavedCards)
       .catch((e) => { throw e });
@@ -308,7 +308,7 @@ function App() {
               <Movies />
             </Route>
             <Route path='/saved-movies'>
-              <SavedMovies />
+              <SavedMovies savedCards={savedCards} />
             </Route >
             <Route path='/profile'>
               <Profile
