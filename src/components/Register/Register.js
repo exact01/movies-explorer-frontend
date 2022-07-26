@@ -1,6 +1,7 @@
 import './Register.css';
 import { Link, useHistory } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useContext } from 'react';
+import { CurrentUserContext } from '../../context/CurrentUserContext';
 
 function Register({
   handleRegister,
@@ -23,12 +24,22 @@ function Register({
   setFormValid,
   loggedIn }) {
 
+  const {
+    setName,
+    setEmail,
+    setPassword
+  } = useContext(CurrentUserContext);
+
   const history = useHistory()
   useEffect(() => {
+    setName('')
+    setEmail('')
+    setPassword('')
     if (loggedIn) {
       history.push('/movies');
     }
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (nameError || emailError || passwordError) {

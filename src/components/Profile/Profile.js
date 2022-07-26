@@ -12,35 +12,40 @@ function Profile({
   name,
   nameDirty,
   nameError,
-  setFormValid,
   updateProfiles,
   setButtonDirty,
   buttonDirty,
-  formValid,
   setName,
-  setEmail
+  setEmail,
+  setFormValidProfile,
+  formValidProfile
 }) {
 
   const {
-    currentUser } = useContext(CurrentUserContext);
+    currentUser
+  } = useContext(CurrentUserContext);
 
   useEffect(() => {
-    if (nameError && emailError) {
-      setFormValid(false)
-    } else { setFormValid(true) }
-  }, [nameError, emailError, setFormValid])
+    if (nameError) {
+      setFormValidProfile(false)
+    } else if (emailError) {
+      setFormValidProfile(false)
+    }
+    else { setFormValidProfile(true) }
+  }, [nameError, emailError, setFormValidProfile])
 
 
   useEffect(() => {
     setName(currentUser.name);
-    setEmail(currentUser.email)
+    setEmail(currentUser.email);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser.name, currentUser.email])
 
   function handleSubmit(e) {
     e.preventDefault();
     updateProfiles(name, email)
       .then(() => {
-        setFormValid(false)
+        setFormValidProfile(false)
         setButtonDirty({ "success": true, 'message': 'Профиль обновлён!', 'color': '#2BE080' })
         setTimeout(() => { setButtonDirty({ 'success': false, 'message': '', 'color': '' }) }, 5000)
       })
@@ -49,7 +54,7 @@ function Profile({
   return (
     <div className='profile'>
       <h1 className='profile__name'>{currentUser.name}!</h1>
-      <form className='profile__form' onSubmit={handleSubmit}>
+      <form className='profile__form' onSubmit={(e) => handleSubmit(e)}>
         <div className='profile__group-input'>
           <input
             value={name}
@@ -84,7 +89,7 @@ function Profile({
           <span className='profile__error-validation'>{(emailDirty && emailError) && emailError}</span>
         </div>
         <div className='profile__button'>
-          <button disabled={!formValid} type='submit' name='edit' className='profile__button-edit'>Редактировать</button>
+          <button disabled={!formValidProfile} type='submit' name='edit' className='profile__button-edit'>Редактировать</button>
           <div className='profile__error profile__error_button'>
             <span className='profile__error-validation' style={{ color: buttonDirty.color }}>{buttonDirty.success && buttonDirty.message}</span>
           </div>

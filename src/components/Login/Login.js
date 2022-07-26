@@ -1,7 +1,7 @@
 import './Login.css';
 import { Link, useHistory } from 'react-router-dom';
-import { useEffect } from 'react';
-
+import { useEffect, useContext } from 'react';
+import { CurrentUserContext } from '../../context/CurrentUserContext';
 function Login({
   handleLogin,
   email,
@@ -16,15 +16,25 @@ function Login({
   formValid,
   setButtonDirty,
   setFormValid,
-  loggedIn
+  loggedIn,
 }) {
+
+  const {
+    setName,
+    setEmail,
+    setPassword
+  } = useContext(CurrentUserContext);
 
   const history = useHistory()
   useEffect(() => {
+    setName('');
+    setEmail('');
+    setPassword('')
     if (loggedIn) {
       history.push('/movies');
     }
-  })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (emailError || passwordError) {

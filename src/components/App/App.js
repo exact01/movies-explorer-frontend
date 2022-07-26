@@ -39,6 +39,7 @@ function App() {
   const [emailError, setEmailError] = useState('Емейл не может быть пустым');
   const [passwordError, setPasswordError] = useState('Пароль не может быть пустым')
   const [formValid, setFormValid] = useState(false);
+  const [formValidProfile, setFormValidProfile] = useState(false);
   const [buttonDirty, setButtonDirty] = useState({ 'success': false, 'message': '', 'color': '' });
   // ========= авторизация 
 
@@ -263,7 +264,8 @@ function App() {
       setSearchFormDirty,
       setSavedCards,
       setEmail,
-      setName
+      setName,
+      setPassword
     }}>
       <div className='page'>
         <Header loggedIn={loggedIn} />
@@ -330,13 +332,15 @@ function App() {
                 name={name}
                 nameDirty={nameDirty}
                 nameError={nameError}
-                setFormValid={setFormValid}
+     
                 updateProfiles={updateProfiles}
                 setButtonDirty={setButtonDirty}
                 buttonDirty={buttonDirty}
-                formValid={formValid}
+   
                 setEmail={setEmail}
                 setName={setName}
+                formValidProfile={formValidProfile}
+                setFormValidProfile={setFormValidProfile}
               />
             </Route>
           </ProtectedRoute>
