@@ -149,6 +149,9 @@ function App() {
   }
 
   function handleSignOut() {
+    setName('');
+    setEmail('');
+    setPassword('')
     setCurrentUser('')
     localStorage.clear()
     setLoggedIn(false);

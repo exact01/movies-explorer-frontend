@@ -17,7 +17,6 @@ function SearchForm({
   setSearchForm,
 }) {
   const location = useLocation();
-
   const { setSearchFormDirty } = useContext(CurrentUserContext);
 
   const [statusCheckBox, setStatusCheckBox] = useState(false);
@@ -40,16 +39,11 @@ function SearchForm({
       return;
     }
     if (location.pathname === '/saved-movies') {
-      if (localStorage.getItem('checkBoxSavedMovies') !== null) {
-        const status = JSON.parse(localStorage.checkBoxSavedMovies)
-        setStatusCheckBox(status.checkBoxSavedMovies)
-      }
-      if (localStorage.getItem('searchFormSavedMovies') !== null) {
-        const text = JSON.parse(localStorage.searchFormSavedMovies)
-        setSearchForm(text.searchFormSavedMovies)
-      }
-      return;
+      localStorage.setItem('searchRequestSavedMovies', JSON.stringify({ "checkBox": false, "request": '', "movies": cards }))
+      setStatusCheckBox(false)
+      setSearchForm('')
     }
+    return;
   }
 
   function soldCheckBox(e) {
@@ -59,14 +53,11 @@ function SearchForm({
       setStatusCheckBox(statusCheckBox)
     }
     if (location.pathname === '/saved-movies') {
-      const statusCheckBox = e.target.checked;
-      localStorage.setItem('checkBoxSavedMovies', JSON.stringify({ "checkBoxSavedMovies": statusCheckBox }))
-      setStatusCheckBox(statusCheckBox)
+      setStatusCheckBox(e.target.checked)
     }
   }
 
   function handleSumbit(e) {
-    console.log(location.pathname)
     e.preventDefault();
     if (location.pathname === '/movies') {
       setSearchInput(searchForm);
