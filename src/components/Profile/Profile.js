@@ -1,49 +1,51 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import './Profile.css';
 import { useEffect, useContext } from 'react';
 import { CurrentUserContext } from '../../context/CurrentUserContext';
+import { useLocation } from 'react-router-dom';
 
 function Profile({
   handleSignOut,
-  email,
-  handlerEmail,
-  handlerName,
   emailDirty,
   emailError,
-  name,
   nameDirty,
   nameError,
   updateProfiles,
   setButtonDirty,
   buttonDirty,
-  setName,
-  setEmail,
-  setFormValidProfile,
-  formValidProfile
+  handlerEmail,
+  handlerName
 }) {
-
   const {
-    currentUser
+    currentUser,
+    setFormValidProfile,
+    setEmailProfile,
+    setNameProfile,
+    nameProfile,
+    emailProfile,
+    formValidProfile,
   } = useContext(CurrentUserContext);
 
+  const location = useLocation();
+
   useEffect(() => {
-    if (nameError) {
-      setFormValidProfile(false)
-    } else if (emailError) {
-      setFormValidProfile(false)
+    setNameProfile(currentUser.name)
+    setEmailProfile(currentUser.email)
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (!nameError) {
+      setFormValidProfile(true)
+
+    } else if (!emailError) {
+      setFormValidProfile(true)
     }
-    else { setFormValidProfile(true) }
-  }, [nameError, emailError, setFormValidProfile])
-
-
-  useEffect(() => {
-    setName(currentUser.name);
-    setEmail(currentUser.email);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser.name, currentUser.email])
+    else { setFormValidProfile(false) }
+  }, [nameError, emailError])
 
   function handleSubmit(e) {
     e.preventDefault();
-    updateProfiles(name, email)
+    updateProfiles(nameProfile, emailProfile)
       .then(() => {
         setFormValidProfile(false)
         setButtonDirty({ "success": true, 'message': 'Профиль обновлён!', 'color': '#2BE080' })
@@ -57,8 +59,8 @@ function Profile({
       <form className='profile__form' onSubmit={(e) => handleSubmit(e)}>
         <div className='profile__group-input'>
           <input
-            value={name}
-            onChange={handlerName}
+            value={nameProfile || ''}
+            onChange={(e) => handlerName(e, location.pathname)}
             placeholder='Имя'
             id='name'
             type='text'
@@ -66,7 +68,7 @@ function Profile({
             minLength='2'
             className='profile__input'
             required />
-          <p className='profile__paragraph'>{currentUser.name}</p>
+          <p className='profile__paragraph'>Имя</p>
         </div>
         <div className='profile__error'>
           <span className='profile__error-validation'>{(nameDirty && nameError) && nameError}</span>
@@ -74,16 +76,16 @@ function Profile({
         <span className='profile__line'></span>
         <div className='profile__group-input'>
           <input
-            value={email}
-            onChange={handlerEmail}
-            placeholder='E-mail'
+            value={emailProfile || ''}
+            onChange={(e) => handlerEmail(e, location.pathname)}
+            placeholder='Email'
             type='email'
             id='email'
             name='email'
             minLength='6'
             className='profile__input'
             required />
-          <p className='profile__paragraph'>{currentUser.email}</p>
+          <p className='profile__paragraph'>Email</p>
         </div>
         <div className='profile__error'>
           <span className='profile__error-validation'>{(emailDirty && emailError) && emailError}</span>

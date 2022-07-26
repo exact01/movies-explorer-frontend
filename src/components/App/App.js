@@ -27,6 +27,9 @@ function App() {
   const [searchForm, setSearchForm] = useState('');
   // eslint-disable-next-line no-unused-vars
   const [searchInput, setSearchInput] = useState('')
+  const [nameProfile, setNameProfile] = useState('')
+  const [emailProfile, setEmailProfile] = useState('')
+  const [formValidProfile, setFormValidProfile] = useState(false);
   const [searchFormDirty, setSearchFormDirty] = useState(false);
   const [searchFormError, setSearchFormError] = useState('Нужно ввести ключевое слово');
   const [name, setName] = useState('');
@@ -39,7 +42,7 @@ function App() {
   const [emailError, setEmailError] = useState('Емейл не может быть пустым');
   const [passwordError, setPasswordError] = useState('Пароль не может быть пустым')
   const [formValid, setFormValid] = useState(false);
-  const [formValidProfile, setFormValidProfile] = useState(false);
+
   const [buttonDirty, setButtonDirty] = useState({ 'success': false, 'message': '', 'color': '' });
   // ========= авторизация 
 
@@ -47,9 +50,9 @@ function App() {
     checkToken();
   }, []);
 
-  function checkToken() {
+  async function checkToken() {
     if (localStorage.getItem('jwt')) {
-      Api
+      await Api
         .getUserProfile()
         .then(setCurrentUser)
         .catch(() => { setLoggedIn(false) })
@@ -193,12 +196,14 @@ function App() {
     }
   }
 
-  function handlerName(e) {
+  function handlerName(e, location) {
     if (e.target.value.length > 0) {
       setNameDirty(true)
     }
+    if (location === '/profile') {
+      setNameProfile(String(e.target.value))
+    } else { setName(e.target.value); }
 
-    setName(e.target.value);
     if (e.target.value === currentUser.name) {
       setNameError('Повторятся нельзя!')
     }
@@ -211,11 +216,16 @@ function App() {
     else { setNameError('') }
   }
 
-  function handlerEmail(e) {
+  function handlerEmail(e, location) {
     if (e.target.value.length > 0) {
       setEmailDirty(true);
     }
-    setEmail(String(e.target.value).trim());
+    if (location === '/profile') {
+      setEmailProfile(String(e.target.value))
+    } else {
+      setEmail(String(e.target.value).trim());
+    }
+
     if (e.target.value === currentUser.email) {
       setEmailError('Повторятся нельзя!')
     }
@@ -245,6 +255,12 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={{
+      setFormValidProfile,
+      setEmailProfile,
+      setNameProfile,
+      nameProfile,
+      emailProfile,
+      formValidProfile,
       currentUser,
       cards,
       handlerSearchForm,
@@ -323,6 +339,10 @@ function App() {
             </Route >
             <Route path='/profile'>
               <Profile
+                setNameError={setNameError}
+                setEmailError={setEmailError}
+                setEmailDirty={setEmailDirty}
+                setNameDirty={setNameDirty}
                 handleSignOut={handleSignOut}
                 email={email}
                 handlerEmail={handlerEmail}
@@ -332,15 +352,11 @@ function App() {
                 name={name}
                 nameDirty={nameDirty}
                 nameError={nameError}
-     
                 updateProfiles={updateProfiles}
                 setButtonDirty={setButtonDirty}
                 buttonDirty={buttonDirty}
-   
                 setEmail={setEmail}
                 setName={setName}
-                formValidProfile={formValidProfile}
-                setFormValidProfile={setFormValidProfile}
               />
             </Route>
           </ProtectedRoute>
