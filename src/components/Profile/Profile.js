@@ -21,20 +21,25 @@ function Profile({
   setEmail
 }) {
 
-  const { currentUser } = useContext(CurrentUserContext);
+  const {
+    currentUser } = useContext(CurrentUserContext);
 
   useEffect(() => {
-    if (nameError || emailError) {
+    if (nameError && emailError) {
       setFormValid(false)
     } else { setFormValid(true) }
   }, [nameError, emailError, setFormValid])
+
+
+  useEffect(() => {
+    setName(currentUser.name);
+    setEmail(currentUser.email)
+  }, [currentUser.name, currentUser.email])
 
   function handleSubmit(e) {
     e.preventDefault();
     updateProfiles(name, email)
       .then(() => {
-        setName('');
-        setEmail('');
         setFormValid(false)
         setButtonDirty({ "success": true, 'message': 'Профиль обновлён!', 'color': '#2BE080' })
         setTimeout(() => { setButtonDirty({ 'success': false, 'message': '', 'color': '' }) }, 5000)

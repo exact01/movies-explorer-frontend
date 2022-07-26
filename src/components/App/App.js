@@ -258,7 +258,9 @@ function App() {
       getSavedCard,
       deleteCard,
       setSearchFormDirty,
-      setSavedCards
+      setSavedCards,
+      setEmail,
+      setName
     }}>
       <div className='page'>
         <Header loggedIn={loggedIn} />
@@ -268,6 +270,7 @@ function App() {
           </Route>
           <Route path='/signup'>
             <Register
+              loggedIn={loggedIn}
               handleRegister={handleRegister}
               handleLogin={handleLogin}
               name={name}
@@ -288,8 +291,9 @@ function App() {
               setFormValid={setFormValid}
             />
           </Route>
-          <Route path='/signin'>
+          <Route path='/signin' >
             <Login
+              loggedIn={loggedIn}
               handleLogin={handleLogin}
               email={email}
               handlerEmail={handlerEmail}

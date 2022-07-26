@@ -6,24 +6,21 @@ import { CurrentUserContext } from '../../context/CurrentUserContext';
 import './SearchForm.css';
 
 function SearchForm({
-  setRenderedMovies,
   handleSearchSubmit,
   handlerSearchForm,
   searchForm,
   searchFormDirty,
   searchFormError,
   setFormValid,
-  setCards,
-  handleSearchCard,
   cards,
   setSearchInput,
   setSearchForm,
-  setErrorResponse,
 }) {
   const location = useLocation();
-  const { setSearchFormDirty } = useContext(CurrentUserContext);
-  const [statusCheckBox, setStatusCheckBox] = useState(false);
 
+  const { setSearchFormDirty } = useContext(CurrentUserContext);
+
+  const [statusCheckBox, setStatusCheckBox] = useState(false);
   useEffect(() => {
     setSearchForm('')
     setSearchFormDirty(false);
@@ -72,9 +69,6 @@ function SearchForm({
     console.log(location.pathname)
     e.preventDefault();
     if (location.pathname === '/movies') {
-      handleSearchCard()
-        .then(() => { setErrorResponse(false) })
-        .catch(() => { setCards([]); setRenderedMovies([]); setErrorResponse(true) })
       setSearchInput(searchForm);
       localStorage.setItem('searchRequest', JSON.stringify({ "checkBox": statusCheckBox, "request": searchForm, "movies": cards }))
       handleSearchSubmit(cards, location.pathname);

@@ -1,5 +1,5 @@
 import './Login.css';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useEffect } from 'react';
 
 function Login({
@@ -15,8 +15,16 @@ function Login({
   buttonDirty,
   formValid,
   setButtonDirty,
-  setFormValid
+  setFormValid,
+  loggedIn
 }) {
+
+  const history = useHistory()
+  useEffect(() => {
+    if (loggedIn) {
+      history.push('/movies');
+    }
+  })
 
   useEffect(() => {
     if (emailError || passwordError) {

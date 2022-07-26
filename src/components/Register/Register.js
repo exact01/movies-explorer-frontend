@@ -1,5 +1,5 @@
 import './Register.css';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useEffect } from 'react';
 
 function Register({
@@ -20,7 +20,15 @@ function Register({
   handlerEmail,
   handlerPassword,
   setButtonDirty,
-  setFormValid }) {
+  setFormValid,
+  loggedIn }) {
+
+  const history = useHistory()
+  useEffect(() => {
+    if (loggedIn) {
+      history.push('/movies');
+    }
+  })
 
   useEffect(() => {
     if (nameError || emailError || passwordError) {

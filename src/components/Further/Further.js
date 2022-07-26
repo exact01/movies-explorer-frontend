@@ -16,14 +16,17 @@ function Further({
   function handleClickFurther() {
     renderMovies()
     setIsLoading(true);
+    setTimeout(() => { setIsLoading(false) }, 1000)
     handleSearchCard()
       .catch((e) => {
         setRenderedMovies([]);
-        setIsLoading(false); setErrorResponse(true); setTimeout(() => {
+        setIsLoading(false);
+        setErrorResponse(true);
+        setTimeout(() => {
           setErrorResponse(false)
         }, 10000)
       })
-      .finally(setIsLoading(false))
+      .finally(setTimeout(() => { setIsLoading(false) }, 1000))
   }
 
   return (
