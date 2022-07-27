@@ -1,0 +1,10 @@
+.register__span-error_center {
+  top: 5px;
+  left: 25%;
+}
+
+@media screen and (max-width: 767px) {
+  .register__span-error_center {
+    left: 13%;
+  }
+}

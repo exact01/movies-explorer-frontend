@@ -1,0 +1,5 @@
+.profile__error_button {
+  display: flex;
+  justify-content: center;
+  bottom: 13px;
+}

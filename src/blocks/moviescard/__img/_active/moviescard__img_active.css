@@ -1,0 +1,12 @@
+.moviescard__img_active {
+  background-color: #2be080;
+  background-image: url(../../../../images/__saved2.svg);
+  animation-timing-function: ease-in-out;
+}
+
+.moviescard__img_active:hover {
+  transition: 0.5s;
+  
+  background-image: url(../../../../images/__saved.svg);
+  background-color: #f9f9f9;
+}

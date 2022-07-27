@@ -6,3 +6,5 @@
 @import url(../../blocks/moviescard/__img/moviescard__img.css);
 @import url(../../blocks/moviescard/__cover/moviescard__cover.css);
 @import url(../../blocks/moviescard/__img-saved/moviescard-saved.css);
+@import url(../../blocks/moviescard/__img/_active/moviescard__img_active.css);
+@import url(../../blocks/moviescard/__link/movies__link.css);

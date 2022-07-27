@@ -1,67 +1,70 @@
 import './Login.css';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import { useEffect, useContext } from 'react';
+import { CurrentUserContext } from '../../context/CurrentUserContext';
+function Login({
+  handleLogin,
+  email,
+  handlerEmail,
+  emailDirty,
+  emailError,
+  password,
+  handlerPassword,
+  passwordDirty,
+  passwordError,
+  buttonDirty,
+  formValid,
+  setButtonDirty,
+  setFormValid,
+  loggedIn,
+}) {
 
-function Login() {
+  const {
+    setName,
+    setEmail,
+    setPassword
+  } = useContext(CurrentUserContext);
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailDirty, setEmailDirty] = useState(false);
-  const [passwordDirty, setPasswordDirty] = useState(false);
-  const [emailError, setEmailError] = useState('Емейл не может быть пустым');
-  const [passwordError, setPasswordError] = useState('Пароль не может быть пустым')
-  const [formValid, setFormValid] = useState(false);
+  const history = useHistory()
+  useEffect(() => {
+    setName('');
+    setEmail('');
+    setPassword('')
+    if (loggedIn) {
+      history.push('/movies');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (emailError || passwordError) {
       setFormValid(false)
     } else { setFormValid(true) }
-  }, [emailError, passwordError])
+  }, [emailError, passwordError, setFormValid])
 
-  function blurHandler(e) {
-    switch (e.target.name) {
-      case 'email':
-        setEmailDirty(true);
-        break;
-      case 'password':
-        setPasswordDirty(true)
-        break;
-      default:
-        break;
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!email || !password) {
+      return;
     }
-  }
-
-  function emailHandler(e) {
-    setEmail(e.target.value);
-
-    if (!String(e.target.value).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
-      setEmailError('Емейл не корректный')
-    } else { setEmailError('') };
-  }
-
-  function passwordHandler(e) {
-    setPassword(e.target.value);
-    if (e.target.value.length < 6 || e.target.value.length > 50) {
-      setPasswordError('Пароль должен быть длинее 6 и меньше 50')
-      if (!e.target.value) {
-        setPasswordError('Пароль не может быть пустым')
-      }
-    } else { setPasswordError('') }
+    handleLogin(email, password)
+      .then(setButtonDirty({ "success": false, 'message': '', 'color': '' }))
+      .catch((err) => {
+        setButtonDirty({ "success": true, 'message': 'Произошла ошибка, попробуйте позже!', 'color': 'red' })
+        setTimeout(() => { setButtonDirty({ "success": false, 'message': '', 'color': '' }) }, 8000)
+      })
   }
 
   return (
-
     <div className='register'>
       <h1 className='register__welcome'>Рады видеть!</h1>
-      <form className="register__form">
+      <form className="register__form" onSubmit={handleSubmit}>
         <fieldset className="register__set">
           <div className='register__box'>
             <label htmlFor='email' className='register__label'>E-mail</label>
             <input
               value={email}
-              onChange={e => emailHandler(e)}
-              onBlur={e => blurHandler(e)}
+              onChange={e => handlerEmail(e)}
               id='email'
               className={`register__input ${(emailDirty && emailError) && 'register__input_red'}`}
               type="email"
@@ -77,8 +80,7 @@ function Login() {
             <label htmlFor='password' className='register__label'>Пароль</label>
             <input
               value={password}
-              onBlur={e => blurHandler(e)}
-              onChange={e => passwordHandler(e)}
+              onChange={e => handlerPassword(e)}
               id='password'
               type="password"
               className={`register__input ${(passwordDirty && passwordError) && 'register__input_red'}`}
@@ -90,15 +92,16 @@ function Login() {
             <span className='register__error'>{(passwordDirty && passwordError) && passwordError}</span>
           </div>
         </fieldset>
-
         <button disabled={!formValid} type="submit" name="save" className="register__form-submit register__form-submit_login">Войти</button>
+        <div className='register__span-error register__span-error_center'>
+          <span className='register__error'>{buttonDirty.success && buttonDirty.message}</span>
+        </div>
       </form >
       <div className='register__login'>
         <p className='register__question'>Ещё не зарегистрированы?</p>
         <Link to='/signup' className='register__link'>Регистрация</Link>
       </div>
     </div>
-    
   )
 }
 

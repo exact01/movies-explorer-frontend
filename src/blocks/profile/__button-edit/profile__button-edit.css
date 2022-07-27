@@ -26,3 +26,7 @@
     line-height: 15px;
   }
 }
+
+.profile__button-edit:disabled {
+  color: #c7a8a8;
+}

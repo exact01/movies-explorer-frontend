@@ -7,6 +7,8 @@
 @import url(../../blocks/searchform/__checkbox-contaioner/searchform__checkbox-contaioner.css);
 @import url(../../blocks/searchform/__form-submit/searchform__form-submit.css);
 @import url(../../blocks/searchform/__search-img-submit/searchform__search-img-submit.css);
+@import url(../../blocks/searchform/__error/searchform__error.css);
+@import url(../../blocks/searchform/__error-span/searchform__error-span.css);
 
 /* checkbox */
 @import url(../../blocks/searchform/__group-checkbox/searchform__group-checkbox.css);

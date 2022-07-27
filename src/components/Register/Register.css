@@ -12,3 +12,6 @@
 @import url(../../blocks/register/__login/register__login.css);
 @import url(../../blocks/register/__question/register__question.css);
 @import url(../../blocks/register/__link/register__link.css);
+@import url(../../blocks/register/__span-error/_center/register__span-error_center.css);
+@import url(../../blocks/profile/__error/profile__error.css);
+@import url(../../blocks/profile/__error-validation/profile__error-validation.css);
